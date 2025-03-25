@@ -1,0 +1,2 @@
+# MoneyMaven
+Diplomarbeit
