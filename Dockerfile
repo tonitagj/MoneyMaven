@@ -7,6 +7,8 @@ WORKDIR /app
 # Copy the source code
 COPY . .
 
+RUN chmod +x mvnw
+
 # Run Maven to build the project and create the jar
 RUN ./mvnw clean package -DskipTests
 
