@@ -30,7 +30,16 @@ public class SecurityConfig {
                                 "/user-profile",
                                 "/update-profile",
                                 "/expenses",
-                                "/expenses/**"
+                                "/expenses/**",
+                                "/financial-profile",
+                                "/dashboard/",
+                                "/dashboard/**",
+                                "/dashboard/impulse-vs-necessity",
+                                "/dashboard/monthly-expenses",
+                                "/dashboard/daily-expenses",
+                                "/dashboard/dashboard/daily-expenses",
+                                "/financial-goal",
+                                "/goal-history"
                         ).permitAll()
                         .anyRequest().authenticated()
                 );

@@ -3,16 +3,18 @@ package org.example.moneymaventonita.services.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.moneymaventonita.JwtUtil;
-import org.example.moneymaventonita.persistance.entities.Expense;
-import org.example.moneymaventonita.persistance.entities.Users;
+import org.example.moneymaventonita.persistance.entities.*;
 import org.example.moneymaventonita.persistance.repositories.ExpenseRepository;
 import org.example.moneymaventonita.persistance.repositories.UserRepository;
 import org.example.moneymaventonita.services.ExpenseService;
 import org.example.moneymaventonita.services.dtos.ExpenseDTO;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +36,8 @@ public class ExpenseServiceImpl implements ExpenseService {
                 .itemName(dto.getItemName())
                 .price(dto.getPrice())
                 .type(dto.getType())
+                .eap(dto.getEap())
+                .ear(dto.getEar())
                 .date(dto.getDate())
                 .user(user)
                 .build();
@@ -54,6 +58,8 @@ public class ExpenseServiceImpl implements ExpenseService {
                         .itemName(exp.getItemName())
                         .price(exp.getPrice())
                         .type(exp.getType())
+                        .eap(exp.getEap())
+                        .ear(exp.getEar())
                         .date(exp.getDate())
                         .build())
                 .collect(Collectors.toList());
@@ -72,8 +78,81 @@ public class ExpenseServiceImpl implements ExpenseService {
                         .itemName(exp.getItemName())
                         .price(exp.getPrice())
                         .type(exp.getType())
+                        .eap(exp.getEap())
+                        .ear(exp.getEar())
                         .date(exp.getDate())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @Scheduled(cron = "0 0 23 * * ?") // runs every day at 11 PM
+    public void addZeroExpensesForInactiveUsers() {
+        LocalDate today = LocalDate.now();
+        List<Users> allUsers = userRepository.findAll();
+
+        for (Users user : allUsers) {
+            boolean hasEntry = expenseRepository.existsByUserAndDate(user, today);
+            if (!hasEntry) {
+                Expense zeroExpense = Expense.builder()
+                        .itemName("No spending")
+                        .price(0.0)
+                        .type(ExpenseType.NECESSITY) // or create a new type like NONE
+                        .eap(EmotionAfterPurchase.HAPPY)
+                        .ear(EmotionAtRegistration.PROUD)
+                        .date(today)
+                        .user(user)
+                        .build();
+                expenseRepository.save(zeroExpense);
+            }
+        }
+    }
+
+    @Override
+    public Map<String, Double> getImpulseVsNecessity(String token) {
+        String email = jwtUtil.extractEmail(token.replace("Bearer ", ""));
+        Users user = userRepository.findByEmail(email).orElseThrow();
+
+        List<Expense> expenses = expenseRepository.findByUser(user);
+
+        double impulse = 0;
+        double necessity = 0;
+
+        for (Expense e : expenses) {
+            if (e.getType() == ExpenseType.IMPULSE) impulse += e.getPrice();
+            else if (e.getType() == ExpenseType.NECESSITY) necessity += e.getPrice();
+        }
+
+        return Map.of("IMPULSE", impulse, "NECESSITY", necessity);
+    }
+
+    @Override
+    public Map<String, Double> getTotalExpensesPerMonth(String token) {
+        String email = jwtUtil.extractEmail(token.replace("Bearer ", ""));
+        Users user = userRepository.findByEmail(email).orElseThrow();
+
+        List<Expense> expenses = expenseRepository.findByUser(user);
+
+        return expenses.stream()
+                .collect(Collectors.groupingBy(
+                        e -> e.getDate().getMonth().toString(),
+                        Collectors.summingDouble(Expense::getPrice)
+                ));
+    }
+
+    @Override
+    public Map<String, Double> getDailyExpensesForMonth(String token, int month, int year) {
+        String email = jwtUtil.extractEmail(token.replace("Bearer ", ""));
+        Users user = userRepository.findByEmail(email).orElseThrow();
+
+        List<Expense> expenses = expenseRepository.findByUser(user);
+
+        return expenses.stream()
+                .filter(e -> e.getDate() != null
+                        && e.getDate().getMonthValue() == month
+                        && e.getDate().getYear() == year)
+                .collect(Collectors.groupingBy(
+                        e -> e.getDate().toString(), // Format: 2025-04-14
+                        Collectors.summingDouble(Expense::getPrice)
+                ));
     }
 }

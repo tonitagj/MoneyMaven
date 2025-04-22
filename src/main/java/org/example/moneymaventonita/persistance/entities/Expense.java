@@ -27,6 +27,12 @@ public class Expense {
     @Enumerated(EnumType.STRING)
     private ExpenseType type; // NECESSITY or IMPULSE
 
+    @Enumerated(EnumType.STRING)
+    private EmotionAfterPurchase eap;
+
+    @Enumerated(EnumType.STRING)
+    private EmotionAtRegistration ear;
+
     @Column(nullable = false)
     private LocalDate date;
 

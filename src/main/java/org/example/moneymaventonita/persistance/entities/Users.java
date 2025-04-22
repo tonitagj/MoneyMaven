@@ -29,4 +29,13 @@ public class Users {
     private String nationality;
     private String phoneNumber;
     private String occupation;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private FinancialProfile financialProfile;
+    public FinancialProfile getFinancialProfile() {
+        return financialProfile;
+    }
+    public void setFinancialProfile(FinancialProfile financialProfile) {
+        this.financialProfile = financialProfile;
+    }
 }
