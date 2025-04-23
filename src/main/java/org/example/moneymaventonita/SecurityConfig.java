@@ -62,7 +62,7 @@ public class SecurityConfig {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true); // Cookie/JWT Support
-        config.setAllowedOriginPatterns(List.of("https://moneymavenfrontend-4.onrender.com/"));
+        config.setAllowedOriginPatterns(List.of("https://moneymavenfrontend-4.onrender.com"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
