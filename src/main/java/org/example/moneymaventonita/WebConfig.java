@@ -19,7 +19,7 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Allow all endpoints
-                        .allowedOrigins("http://localhost:5173") // Allow frontend URL
+                        .allowedOrigins("https://moneymavenfrontend-4.onrender.com/") // Allow frontend URL
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Allowed request methods
                         .allowedHeaders("*") // Allow all headers
                         .allowCredentials(true);
