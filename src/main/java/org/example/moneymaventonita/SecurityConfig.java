@@ -37,7 +37,7 @@ public class SecurityConfig {
                                 "/dashboard/impulse-vs-necessity",
                                 "/dashboard/monthly-expenses",
                                 "/dashboard/daily-expenses",
-                                "/dashboard/dashboard/daily-expenses",
+                                "/dashboard/daily-expenses",
                                 "/financial-goal",
                                 "/goal-history",
                                 "/dashboard/dashboard/weekly-expenses"

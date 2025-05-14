@@ -92,4 +92,13 @@ public class DashboardAPI {
         return ResponseEntity.ok(expenseService.getWeeklyExpensesForMonth(token, month, year));
 
     }
+
+    @GetMapping("/dashboard/weekly-impulse-vs-necessity")
+    public ResponseEntity<?> getWeeklyImpulseVsNecessity(
+            @RequestHeader("Authorization") String token,
+            @RequestParam int month,
+            @RequestParam int year) {
+        Map<String, Map<String, Double>> data = expenseService.getWeeklyImpulseVsNecessity(token, month, year);
+        return ResponseEntity.ok(data);
+    }
 }

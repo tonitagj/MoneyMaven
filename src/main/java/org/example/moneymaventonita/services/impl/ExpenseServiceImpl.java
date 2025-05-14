@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.temporal.WeekFields;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -178,5 +175,33 @@ public class ExpenseServiceImpl implements ExpenseService {
         }
 
         return weeklyTotals;
+    }
+
+    @Override
+    public Map<String, Map<String, Double>> getWeeklyImpulseVsNecessity(String token, int month, int year) {
+        String email = jwtUtil.extractEmail(token.replace("Bearer ", ""));
+        Users user = userRepository.findByEmail(email).orElseThrow();
+
+        List<Expense> expenses = expenseRepository.findByUser(user).stream()
+                .filter(e -> e.getDate() != null &&
+                        e.getDate().getMonthValue() == month &&
+                        e.getDate().getYear() == year)
+                .collect(Collectors.toList());
+
+        Map<String, Map<String, Double>> result = new LinkedHashMap<>();
+
+        for (Expense expense : expenses) {
+            LocalDate date = expense.getDate();
+            int week = date.get(WeekFields.ISO.weekOfMonth());
+            String weekLabel = "Week " + week;
+
+            result.putIfAbsent(weekLabel, new HashMap<>());
+            Map<String, Double> typeMap = result.get(weekLabel);
+
+            String type = expense.getType().name();
+            typeMap.put(type, typeMap.getOrDefault(type, 0.0) + expense.getPrice());
+        }
+
+        return result;
     }
 }
