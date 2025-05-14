@@ -39,11 +39,4 @@ public class ExpenseApi {
     public ResponseEntity<List<ExpenseDTO>> getExpensesForToday(@RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(expenseService.getExpensesForToday(token));
     }
-
-    @GetMapping("/dashboard/weekly-expenses")
-    public ResponseEntity<Map<Integer, Double>> getWeeklyExpenses(@RequestHeader("Authorization") String token, @RequestParam int month, @RequestParam int year) {
-
-        Map<Integer, Double> weekly = expenseService.getWeeklyExpensesForMonth(token, month, year);
-        return ResponseEntity.ok(weekly);
-    }
 }

@@ -85,4 +85,11 @@ public class DashboardAPI {
         System.out.println("🔐 Token received: " + token);
         return ResponseEntity.ok(expenseService.getDailyExpensesForMonth(token, month, year));
     }
+
+    @GetMapping("/dashboard/weekly-expenses")
+    public ResponseEntity<Map<Integer, Double>> getWeeklyExpenses(@RequestHeader("Authorization") String token, @RequestParam int month, @RequestParam int year) {
+
+        Map<Integer, Double> weekly = expenseService.getWeeklyExpensesForMonth(token, month, year);
+        return ResponseEntity.ok(weekly);
+    }
 }
