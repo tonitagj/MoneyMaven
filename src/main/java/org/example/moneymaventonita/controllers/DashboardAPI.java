@@ -93,7 +93,7 @@ public class DashboardAPI {
 
     }
 
-    @GetMapping("/dashboard/weekly-impulse-vs-necessity")
+    @GetMapping("/weekly-impulse-vs-necessity")
     public ResponseEntity<?> getWeeklyImpulseVsNecessity(
             @RequestHeader("Authorization") String token,
             @RequestParam int month,
