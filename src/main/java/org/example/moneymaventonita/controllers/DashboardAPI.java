@@ -89,7 +89,7 @@ public class DashboardAPI {
     @GetMapping("/dashboard/weekly-expenses")
     public ResponseEntity<Map<Integer, Double>> getWeeklyExpenses(@RequestHeader("Authorization") String token, @RequestParam int month, @RequestParam int year) {
 
-        Map<Integer, Double> weekly = expenseService.getWeeklyExpensesForMonth(token, month, year);
-        return ResponseEntity.ok(weekly);
+        return ResponseEntity.ok(expenseService.getWeeklyExpensesForMonth(token, month, year));
+
     }
 }
