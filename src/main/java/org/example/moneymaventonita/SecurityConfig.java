@@ -40,7 +40,7 @@ public class SecurityConfig {
                                 "/dashboard/dashboard/daily-expenses",
                                 "/financial-goal",
                                 "/goal-history",
-                                "/expenses/dashboard/weekly-expenses"
+                                "/dashboard/dashboard/weekly-expenses"
                         ).permitAll()
                         .anyRequest().authenticated()
                 );
