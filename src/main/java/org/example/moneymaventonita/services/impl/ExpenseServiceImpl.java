@@ -12,7 +12,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.temporal.WeekFields;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -154,5 +157,26 @@ public class ExpenseServiceImpl implements ExpenseService {
                         e -> e.getDate().toString(), // Format: 2025-04-14
                         Collectors.summingDouble(Expense::getPrice)
                 ));
+    }
+
+    @Override
+    public Map<Integer, Double> getWeeklyExpensesForMonth(String token, int month, int year) {
+        String email = jwtUtil.extractEmail(token.replace("Bearer ", ""));
+        Users user = userRepository.findByEmail(email).orElseThrow();
+
+        YearMonth yearMonth = YearMonth.of(year, month);
+        LocalDate startDate = yearMonth.atDay(1);
+        LocalDate endDate = yearMonth.atEndOfMonth();
+
+        List<Expense> expenses = expenseRepository.findByUserAndDateBetween(user, startDate, endDate);
+
+        Map<Integer, Double> weeklyTotals = new TreeMap<>();
+        for (Expense expense : expenses) {
+            int weekOfMonth = expense.getDate()
+                    .get(WeekFields.of(Locale.getDefault()).weekOfMonth());
+            weeklyTotals.merge(weekOfMonth, expense.getPrice(), Double::sum);
+        }
+
+        return weeklyTotals;
     }
 }

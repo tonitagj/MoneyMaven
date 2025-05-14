@@ -15,4 +15,6 @@ public interface ExpenseRepository extends JpaRepository<Expense, Long> {
     List<Expense> findByUser(Users user);
     @Query("SELECT e.date, SUM(e.price) FROM Expense e WHERE e.user = :user AND MONTH(e.date) = :month AND YEAR(e.date) = :year GROUP BY e.date ORDER BY e.date")
     List<Object[]> findDailySumsByMonthAndYear(@Param("user") Users user, @Param("month") int month, @Param("year") int year);
+
+    List<Expense> findByUserAndDateBetween(Users user, LocalDate start, LocalDate end);
 }

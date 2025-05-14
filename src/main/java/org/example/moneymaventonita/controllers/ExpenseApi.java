@@ -2,11 +2,15 @@ package org.example.moneymaventonita.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.example.moneymaventonita.services.ExpenseService;
+import org.example.moneymaventonita.services.UsersService;
 import org.example.moneymaventonita.services.dtos.ExpenseDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.attribute.UserPrincipal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/expenses")
@@ -14,6 +18,9 @@ import java.util.List;
 public class ExpenseApi {
 
     private final ExpenseService expenseService;
+    @Autowired
+    private final UsersService usersService;
+
 
     @PostMapping
     public ResponseEntity<?> saveExpense(@RequestHeader("Authorization") String token,
@@ -31,5 +38,12 @@ public class ExpenseApi {
     @GetMapping("/today")
     public ResponseEntity<List<ExpenseDTO>> getExpensesForToday(@RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(expenseService.getExpensesForToday(token));
+    }
+
+    @GetMapping("/dashboard/weekly-expenses")
+    public ResponseEntity<Map<Integer, Double>> getWeeklyExpenses(@RequestHeader("Authorization") String token, @RequestParam int month, @RequestParam int year) {
+
+        Map<Integer, Double> weekly = expenseService.getWeeklyExpensesForMonth(token, month, year);
+        return ResponseEntity.ok(weekly);
     }
 }

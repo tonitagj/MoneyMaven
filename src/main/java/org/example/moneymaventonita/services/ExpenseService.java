@@ -14,4 +14,8 @@ public interface ExpenseService {
     Map<String, Double> getImpulseVsNecessity(String token);
     Map<String, Double> getTotalExpensesPerMonth(String token);
     Map<String, Double> getDailyExpensesForMonth(String token, int month, int year);
+    Map<Integer, Double> getWeeklyExpensesForMonth(String token, int month, int year);
+
+
+
 }
