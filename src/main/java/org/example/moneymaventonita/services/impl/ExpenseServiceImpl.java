@@ -9,6 +9,7 @@ import org.example.moneymaventonita.persistance.repositories.UserRepository;
 import org.example.moneymaventonita.services.ExpenseService;
 import org.example.moneymaventonita.services.dtos.ExpenseDTO;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -204,4 +205,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
         return result;
     }
+
+
+
 }

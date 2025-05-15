@@ -101,4 +101,14 @@ public class DashboardAPI {
         Map<String, Map<String, Double>> data = expenseService.getWeeklyImpulseVsNecessity(token, month, year);
         return ResponseEntity.ok(data);
     }
+
+    @GetMapping("/dashboard/emotion-registration-weekly")
+    public ResponseEntity<Map<String, Long>> getWeeklyEmotionAtRegistration(
+            @RequestHeader("Authorization") String token,
+            @RequestParam int month,
+            @RequestParam int year
+    ) {
+        Map<String, Long> emotionData = expenseService.getWeeklyEmotionAtRegistration(token, month, year);
+        return ResponseEntity.ok(emotionData);
+    }
 }
